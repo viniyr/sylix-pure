@@ -1,0 +1,16 @@
+{
+  "status": {
+    "code": 200,
+    "message": "Success"
+  },
+  "data": {
+    "user": {
+      "id": "12345",
+      "name": "John Doe",
+      "email": "johndoe@example.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  },
+  "error": null,
+  "meta": null
+}

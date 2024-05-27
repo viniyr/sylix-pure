@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { fetchWrapper } from "@/lib/network/fetchInterceptor"
 import React, { useReducer, useState } from "react"
 
 export function LoginForm() {
@@ -26,17 +27,22 @@ export function LoginForm() {
   const [pageStatus, setPageStatus] = useState({ status: "", message: "" })
 
   const logUserIn = async (e: React.FormEvent) => {
-
     e.preventDefault();
+
+    if (!credentials.username || !credentials.password) {
+      setPageStatus({ status: "ERROR", message: "Please fill all the fields" })
+      return;
+    }
+
     setPageStatus({ status: "LOADING", message: "" })
 
-    console.log(credentials)
+    const { data, error } = await fetchWrapper('/api/login', { method: 'POST', body: credentials }) || {}
 
-    setTimeout(() => {
-      setPageStatus({ status: "ERROR", message: "Please fill all the fields" })
-    }, 1000)
-
-    return true;
+    if (error) {
+      setPageStatus({ status: "ERROR", message: error })
+      return
+    }
+ 
   }
 
   return (
@@ -52,11 +58,11 @@ export function LoginForm() {
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input onChange={(e) => setCredentials({ username: e.target.value })} id="email" type="email" placeholder="m@example.com" />
+            <Input data-testid="username-input" onChange={(e) => setCredentials({ username: e.target.value })} id="email" type="email" placeholder="m@example.com" />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input onChange={(e) => setCredentials({ username: e.target.value })} id="password" type="password" />
+            <Input data-testid="password-input" onChange={(e) => setCredentials({ password: e.target.value })} id="password" type="password" />
           </div>
         </CardContent>
         <CardFooter>
